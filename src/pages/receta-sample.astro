@@ -11,7 +11,6 @@ const { src } = Astro.props;
 ---
 
 <Layout title='Cevivhe'>
-    <main>
         <Header></Header>
         <div class="container mx-auto px-4 py-8" style="max-width: 800px;">
             <div class="bg-white shadow-md rounded-lg overflow-hidden">
@@ -51,7 +50,7 @@ const { src } = Astro.props;
                     </div>
                 </div>
             <!-- contenedor imagenes prox -->
-            <img src="https://cdn0.recetasgratis.net/es/posts/5/6/5/ceviche_de_camaron_estilo_sinaloa_11565_600.webp" alt="" class="mt-4 mb-4 m-auto rounded-lg shadow-lg">
+            <img src="https://cdn0.recetasgratis.net/es/posts/5/6/5/ceviche_de_camaron_estilo_sinaloa_11565_600.webp" alt="" class="mt-4 mb-4 m-auto rounded-lg shadow-lg h-[442px] w-[600px]">
 
             <div class="container mx-auto px-4 py-8" style="max-width: 650px;">
                 <div class="mt-8">
@@ -141,25 +140,25 @@ const { src } = Astro.props;
                 
 
                 <div class="mt-8">
-                    <h2 class="text-xl font-semibold mb-4">Valoración y Comentarios</h2>
+                    <h2 class="text-xl font-semibold mb-4">Comentarios</h2>
                 
                     <!-- Comentarios -->
                     <div class="border rounded-lg p-4">
-                    <h3 class="text-lg font-semibold mb-4">Comentarios</h3>
-                    <div class="mb-4">
-                        <div class="flex justify-between items-center mb-2">
-                        <span class="font-semibold">Nombre Usuario</span>
-                        <span class="text-gray-500 text-sm">Hace 2 días</span>
+                        <h3 class="text-lg font-semibold mb-4">Comentarios</h3>
+                        <div class="mb-4">
+                            <div class="flex justify-between items-center mb-2">
+                            <span class="font-semibold">Nombre Usuario</span>
+                            <span class="text-gray-500 text-sm">Hace 2 días</span>
+                            </div>
+                            <p class="text-gray-700">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam at libero sit amet lorem aliquet condimentum.</p>
                         </div>
-                        <p class="text-gray-700">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam at libero sit amet lorem aliquet condimentum.</p>
-                    </div>
-                    <div class="mb-4">
-                        <div class="flex justify-between items-center mb-2">
-                        <span class="font-semibold">Otro Usuario</span>
-                        <span class="text-gray-500 text-sm">Hace 5 días</span>
+                        <div class="mb-4">
+                            <div class="flex justify-between items-center mb-2">
+                            <span class="font-semibold">Otro Usuario</span>
+                            <span class="text-gray-500 text-sm">Hace 5 días</span>
+                            </div>
+                            <p class="text-gray-700">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam at libero sit amet lorem aliquet condimentum.</p>
                         </div>
-                        <p class="text-gray-700">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam at libero sit amet lorem aliquet condimentum.</p>
-                    </div>
                     <!-- comentarios proximos :o -->
                     </div>
              </div>
@@ -169,5 +168,4 @@ const { src } = Astro.props;
             </div>
         </div>
         <Footer></Footer>
-    </main>
 </Layout>
