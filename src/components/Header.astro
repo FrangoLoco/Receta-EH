@@ -1,20 +1,6 @@
----
-import SideBar from "../components/SideBar.astro"
----
-<script>
-document.getElementById("boton-menu-header").addEventListener("click",mostrar)
-
-function mostrar(){
-    document.getElementById("side-bar").style.display = "block"
-}
-</script>
 <header class="bg-white shadow-lg">
     <div class="container mx-auto px-4 py-6 flex justify-between items-center">
         <div class="flex items-center">
-            <button class="px-4" id="boton-menu-header">
-                <svg width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-menu-2"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 6l16 0" /><path d="M4 12l16 0" /><path d="M4 18l16 0" /></svg>
-            </button>
-            <SideBar id="side-bar"></SideBar>
             <a href="/" class="text-xl font-bold text-gray-800">Recetas EH</a>
             <form action="#" class="ml-4">
                 <input type="text" placeholder="Buscar recetas" class="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring focus:ring-blue-200">
