@@ -1,3 +1,15 @@
+---
+import SideBar from "../components/SideBar.astro"
+---
+<script>
+document.getElementById("boton-menu-header").addEventListener("click",mostrar)
+
+function mostrar(){
+    document.getElementById("side-bar").style.display = "block"
+}
+
+</script>
+        
 <header class="bg-white shadow-lg">
     <div class="container mx-auto px-4 py-6 flex justify-between items-center">
         <div class="flex items-center">

@@ -4,5 +4,10 @@ import tailwind from "@astrojs/tailwind";
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [tailwind()]
+  integrations: [tailwind()],
+  server: {
+    proxy: {
+      '/api': 'http://localhost:3000', // Redirige las solicitudes al backend
+    },
+  },
 });
