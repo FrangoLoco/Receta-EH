@@ -9,7 +9,7 @@ import Layout from "../layouts/Layout.astro";
     form.addEventListener('submit', async (event) => {
       event.preventDefault(); // Evita recargar la página 
       const formData = new FormData(form);
-      
+
       const data = {
         email: formData.get('email'),
         username: formData.get('username'),
