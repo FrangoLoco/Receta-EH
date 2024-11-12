@@ -2,6 +2,12 @@
 import SideBar from "../components/SideBar.astro"
 ---
 <script>
+    //obtener el usuario que esta en el localstorage
+const userName = localStorage.getItem('usuario')
+if(userName.length != 0){
+    document.getElementById("usuario").innerHTML = userName
+}
+
 document.getElementById("boton-menu-header").addEventListener("click",mostrar)
 
 function mostrar(){
@@ -28,7 +34,7 @@ function mostrar(){
         </div>
         <nav>
             <ul class="flex items-center space-x-4">
-                <li><a href="log-in" class="text-gray-800 hover:text-blue-500">Log in</a></li>
+                <li><a href="log-in" class="text-gray-800 hover:text-blue-500" id="usuario">Log in</a></li>
                 <li><a href="about-us" class="text-gray-800 hover:text-blue-500">Acerca</a></li>
             </ul>
         </nav>
