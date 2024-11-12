@@ -1,0 +1,38 @@
+<script>
+    document.getElementById("boton-cerrar").addEventListener("click",ocultar)
+    
+    function ocultar(){
+        document.getElementById("side-bar").style.display = "none"
+    }
+</script>
+
+<!-- Barra lateral desplegable -->
+<div id="side-bar" class="fixed z-10 inset-y-0 left-0 w-80 bg-gray-800 text-white py-4 px-6 hidden ">
+    <!-- Botón de cerrar -->
+    <div class="flex justify-end">
+        <button id="boton-cerrar" class="text-gray-300 focus:outline-none">
+            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+    <!-- Contenido de la barra lateral -->
+     <!-- Filtros de recetas -->
+    <ul class="mt-6">
+        <li class="mb-4">
+            <a href="#" class="block text-gray-300 hover:text-white">Entradas</a>
+        </li>
+        <li class="mb-4">
+            <a href="#" class="block text-gray-300 hover:text-white">Platos Principales</a>
+        </li>
+        <li class="mb-4">
+            <a href="#" class="block text-gray-300 hover:text-white">Postres</a>
+        </li>
+        <li class="mb-4">
+            <a href="#" class="block text-gray-300 hover:text-white">Bebidas</a>
+        </li>
+        <li class="mb-4">
+            <a href="#" class="block text-gray-300 hover:text-white">Platillos baratos</a>
+        </li>
+    </ul>
+</div>

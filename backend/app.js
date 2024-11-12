@@ -78,7 +78,7 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-// Ruta Post para comparar el login y password
+// Ruta POST para autenticación de usuarios
 app.post('/api/usuarios/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -96,8 +96,14 @@ app.post('/api/usuarios/login', async (req, res) => {
     if (!match) {
       return res.status(401).json({ error: 'Credenciales incorrectas' });
     }
-
-    res.json({ message: 'Inicio de sesión exitoso', userId: user.id });
+    res.json({
+      message: 'Inicio de sesión exitoso',
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+      },
+    });
   } catch (error) {
     console.error('Error en la autenticación:', error);
     res.status(500).json({ error: 'Error en la autenticación' });

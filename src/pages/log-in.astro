@@ -5,11 +5,14 @@ import Layout from '../layouts/Layout.astro';
   document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('log-in-form') as HTMLFormElement;
 
+    //obtener en localstorage el nombre del usuario desde el backend
+    const userName = localStorage.getItem('userName');
+
     form.addEventListener('submit', async (event) => {
       event.preventDefault(); // Evita recargar la página
 
       const formData = new FormData(form);
-
+       
       const data = {
         email: formData.get('email'),
         password: formData.get('password'),
@@ -27,6 +30,8 @@ import Layout from '../layouts/Layout.astro';
         if (response.ok) {
           const result = await response.json();
           console.log('Usuario logueado exitosamente:', result);
+          console.log(JSON.stringify(result));
+          localStorage.setItem('usuario', JSON.stringify(result.user.username));
           alert('Usuario logueado exitosamente');
 
           // Igual te lleva a la página de inicio
