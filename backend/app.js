@@ -110,6 +110,35 @@ app.post('/api/usuarios/login', async (req, res) => {
   }
 });
 
+// Ruta GET para obtener recetas(Se utiliza en el index para las cards)
+app.get('/api/recetas', async (req, res) => {
+  try {
+    const [recetas] = await pool.query(
+      'SELECT ID_RECETA, NOMBRE_RECETA, Descripcion_Receta, IMAGEN_RECETA FROM RECETAS'
+    );
+    res.json(recetas);
+  } catch (error) {
+    console.error('Error al obtener recetas:', error);
+    res.status(500).json({ error: 'Error al obtener recetas' });
+  }
+});
+
+// Endpoint para obtener una receta por id
+app.get('/api/recetas/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const [rows] = await pool.query('SELECT * FROM RECETAS WHERE ID_RECETA = ?', [id]);
+    console.log(rows);
+    if (rows.length > 0) {
+      res.json(rows[0]);
+    } else {
+      res.status(404).json({ error: 'Receta no encontrada' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener la receta' });
+  }
+});
+
 // Iniciar el servidor
 app.listen(port, () => {
   console.log(`Servidor backend corriendo en http://localhost:${port}`);

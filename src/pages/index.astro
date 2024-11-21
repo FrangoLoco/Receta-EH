@@ -1,58 +1,38 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import CardsFood from '../components/CardsFood.astro'
-import Header from '../components/Header.astro'
-import Footer from '../components/Footer.astro'
+import CardsFood from '../components/CardsFood.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
 import BotonSubirRcetas from '../components/BotonSubirRcetas.astro';
+
+// Lógica del servidor: Fetch para obtener recetas desde el backend
+let recetas = [];
+
+try {
+  const response = await fetch('http://localhost:3000/api/recetas');
+  recetas = await response.json(); // Asignar los datos a la variable recetas
+} catch (error) {
+  console.error('Error al obtener recetas:', error);
+}
 ---
 
 <Layout title="Recetas EH">
-	<main>
-		<Header></Header>
-		<div class="container mx-auto px-4 py-8">
-			<!-- Contenido de la página -->
-			<h2 class="text-2xl font-bold mb-4">Recetas Populares</h2>
-			<!-- Contenido por llegar -->
-			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-				<CardsFood 
-					href='receta-sample'					' 
-					title='Ceviche de camarón' 
-					body='Ceviches hay muchos, pero al estilo Sinaloa sólo hay uno y estoy seguro que este que comparto con RecetasGratis te encantará, porque no se parece en anda la resto de los ceviches de camarón que has probado, te lo aseguro.' 
-					src='https://cdn0.recetasgratis.net/es/posts/5/6/5/ceviche_de_camaron_estilo_sinaloa_11565_600.webp'>
-				</CardsFood>
-				<CardsFood 
-					href='#' 
-					title='xdddd' 
-					body='l uso del término "combustión humana espontánea" se refiere a la muerte por fuego que se origina sin una fuente externa aparente de ignición; la creencia consiste en que el fuego comienza dentro del cuerpo de la víctima. Esta idea y el término "combustión humana espontánea" fueron propuestos por primera vez en 1746 por Paul Rolli, miembro de la Royal Society, en un artículo publicado en Philosophical Transactions sobre la misteriosa muerte de la condesa' 
-					src='https://cdn2.cocinadelirante.com/sites/default/files/images/2023/08/receta-de-pizza-sin-horno.jpg'>
-				</CardsFood>
-				<CardsFood 
-					href='#' 
-					title='xdddd' 
-					body='lolololosldksal;daslkndjkasdmsdkabnldvndskljabn' 
-					src='https://cdn2.cocinadelirante.com/sites/default/files/images/2023/08/receta-de-pizza-sin-horno.jpg'>
-				</CardsFood>
-				<CardsFood 
-					href='#' 
-					title='xdddd' 
-					body='lolololosldksal;daslkndjkasdmsdkabnldvndskljabn' 
-					src='https://cdn2.cocinadelirante.com/sites/default/files/images/2023/08/receta-de-pizza-sin-horno.jpg'>
-				</CardsFood>
-				<CardsFood 
-					href='#' 
-					title='xdddd' 
-					body='lolololosldksal;daslkndjkasdmsdkabnldvndskljabn' 
-					src='https://cdn2.cocinadelirante.com/sites/default/files/images/2023/08/receta-de-pizza-sin-horno.jpg'>
-				</CardsFood>
-				<CardsFood 
-					href='#' 
-					title='xdddd' 
-					body='lolololosldksal;daslkndjkasdmsdkabnldvndskljabn' 
-					src='https://cdn2.cocinadelirante.com/sites/default/files/images/2023/08/receta-de-pizza-sin-horno.jpg'>
-				</CardsFood>
-			</div>
-			<BotonSubirRcetas></BotonSubirRcetas>
-		</div>
-		<Footer></Footer>
-	</main>
+  <main>
+    <Header />
+    <div class="container mx-auto px-4 py-8">
+      <h2 class="text-2xl font-bold mb-4">Recetas Populares</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {recetas.map((receta) => (
+          <CardsFood 
+            href={`/recetas/${receta.ID_RECETA}`} 
+            title={receta.NOMBRE_RECETA} 
+            body={receta.Descripcion_Receta} 
+            src={`src/${receta.IMAGEN_RECETA}`} 
+          />
+        ))}
+      </div>
+      <BotonSubirRcetas />
+    </div>
+    <Footer />
+  </main>
 </Layout>
