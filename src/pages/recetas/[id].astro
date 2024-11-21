@@ -1,0 +1,193 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from '../../components/Header.astro'
+import Footer from '../../components/Footer.astro'
+
+//Parámetro dinámico de la URL
+export async function getStaticPaths() {
+    const recetas = await fetch("http://localhost:3000/api/recetas"); 
+
+    const data = await recetas.json();
+
+    return data.map((receta) => ({
+        params: { id: receta.ID_RECETA.toString() },
+    }));
+}
+
+
+const { id } = Astro.params;
+
+//Solicitud al backend para obtener los datos de la receta
+const receta = await fetch(`http://localhost:3000/api/recetas/${id}`)
+  .then(res => res.json())
+  .catch(err => {
+    console.error("Error fetching receta:", err);
+    return null;
+  });
+if (!receta) {
+  throw new Error("No se encontró la receta.");
+}
+
+---
+
+<Layout title={receta.NOMBRE_RECETA}>
+  <Header></Header>
+  <div class="container mx-auto px-4 py-8" style="max-width: 800px;">
+      <div class="bg-white shadow-md rounded-lg overflow-hidden">
+          <!-- Cabecera contenedor -->
+          <div class="flex justify-between items-center px-6 py-4 border-b">
+              <h1 class="text-3xl font-bold">{receta.NOMBRE_RECETA}</h1>
+              <!-- Botones de favoritos y compartir -->
+              <div class="flex items-center space-x-4">
+                  <!-- Botón de favoritos -->
+                  <button class="text-gray-600">
+                      <svg class="w-6 h-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path fill-rule="evenodd" clip-rule="evenodd" d="M12 6.00019C10.2006 3.90317 7.19377 3.2551 4.93923 5.17534C2.68468 7.09558 2.36727 10.3061 4.13778 12.5772C5.60984 14.4654 10.0648 18.4479 11.5249 19.7369C11.6882 19.8811 11.7699 19.9532 11.8652 19.9815C11.9483 20.0062 12.0393 20.0062 12.1225 19.9815C12.2178 19.9532 12.2994 19.8811 12.4628 19.7369C13.9229 18.4479 18.3778 14.4654 19.8499 12.5772C21.6204 10.3061 21.3417 7.07538 19.0484 5.17534C16.7551 3.2753 13.7994 3.90317 12 6.00019Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                  </button>
+                  <!-- Botones de Compartir -->
+                  <div class="flex items-center space-x-2">
+                      <button class="text-gray-600">
+                          <svg class="w-6 h-6 text-gray-600" viewBox="-5 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                              <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                              <g id="Dribbble-Light-Preview" transform="translate(-385.000000, -7399.000000)" fill="#000000">
+                              <g id="icons" transform="translate(56.000000, 160.000000)">
+                              <path d="M335.821282,7259 L335.821282,7250 L338.553693,7250 L339,7246 L335.821282,7246 L335.821282,7244.052 C335.821282,7243.022 335.847593,7242 337.286884,7242 L338.744689,7242 L338.744689,7239.14 C338.744689,7239.097 337.492497,7239 336.225687,7239 C333.580004,7239 331.923407,7240.657 331.923407,7243.7 L331.923407,7246 L329,7246 L329,7250 L331.923407,7250 L331.923407,7259 L335.821282,7259 Z" id="facebook-[#176]"></path>
+                          </svg>
+                      </button>
+                      <button class="text-gray-600">
+                          <svg class="w-6 h-6 text-gray-600" viewBox="0 0 21.573 19.5" version="1.1" id="svg4" xmlns="http://www.w3.org/2000/svg">
+                          <defs
+                              id="defs8" />
+                          <path d="m 16.998462,0 h 3.308 l -7.227,8.26 8.502,11.24 h -6.657 l -5.2139994,-6.817 -5.966,6.817 H 0.43446256 L 8.1644626,10.665 0.00846256,0 H 6.8344626 l 4.7129994,6.231 z m -1.161,17.52 h 1.833 L 5.8384626,1.876 h -1.967 z"
+                              id="path2" />
+                          </svg>
+                      </button>
+                      <button class="text-gray-600">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 774 1000.2" class="w-6 h-6 text-gray-600"><path d="M0 359c0-42 8.8-83.7 26.5-125s43-79.7 76-115 76.3-64 130-86S345.7 0 411 0c106 0 193 32.7 261 98s102 142.3 102 231c0 114-28.8 208.2-86.5 282.5S555.3 723 464 723c-30 0-58.2-7-84.5-21s-44.8-31-55.5-51l-40 158c-3.3 12.7-7.7 25.5-13 38.5S259.8 873 253.5 885c-6.3 12-12.7 23.3-19 34s-12.7 20.7-19 30-11.8 17.2-16.5 23.5-9 11.8-13 16.5l-6 8c-2 2.7-4.7 3.7-8 3s-5.3-2.7-6-6c0-.7-.5-5.3-1.5-14s-2-17.8-3-27.5-2-22.2-3-37.5-1.3-30.2-1-44.5 1.3-30.2 3-47.5 4.2-33.3 7.5-48c7.3-31.3 32-135.7 74-313-5.3-10.7-9.7-23.5-13-38.5s-5-27.2-5-36.5l-1-15c0-42.7 10.8-78.2 32.5-106.5S303.3 223 334 223c24.7 0 43.8 8.2 57.5 24.5S412 284.3 412 309c0 15.3-2.8 34.2-8.5 56.5s-13.2 48-22.5 77-16 52.5-20 70.5c-6.7 30-.8 56 17.5 78s42.8 33 73.5 33c52.7 0 96.2-29.8 130.5-89.5S634 402.7 634 318c0-64.7-21-117.5-63-158.5S470.3 98 395 98c-84 0-152.2 27-204.5 81S112 297.7 112 373c0 44.7 12.7 82.3 38 113 8.7 10 11.3 20.7 8 32-1.3 3.3-3.3 11-6 23s-4.7 19.7-6 23c-1.3 7.3-4.7 12.2-10 14.5s-11.3 2.2-18-.5c-39.3-16-68.8-43.5-88.5-82.5S0 411 0 359z"/></svg>
+                      </button>
+                  </div>
+              </div>
+          </div>
+      <!-- contenedor imagenes prox -->
+      <img src={`/src${receta.IMAGEN_RECETA	}`} alt={receta.NOMBRE_RECETA} class="mt-4 mb-4 m-auto rounded-lg shadow-lg h-[442px] w-[600px]">
+
+      <div class="container mx-auto px-4 py-8" style="max-width: 650px;">
+          <div class="mt-8">
+              <h2 class="text-xl font-semibold mb-2">Información Adicional</h2>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="border rounded-lg overflow-hidden text-center">
+                  <div class="bg-gray-100 px-4 py-2">
+                  <p class="text-sm text-gray-600 font-semibold">Porciones</p>
+                  </div>
+                  <div class="p-4">
+                  <p class="text-lg font-semibold">{receta.Porciones}</p>
+                  </div>
+              </div>
+              <div class="border rounded-lg overflow-hidden text-center">
+                  <div class="bg-gray-100 px-4 py-2">
+                  <p class="text-sm text-gray-600 font-semibold">Tiempo de Preparación</p>
+                  </div>
+                  <div class="p-4">
+                  <p class="text-lg font-semibold">{receta.Tiempo_Preparacion} minutos</p>
+                  </div>
+              </div>
+              <div class="border rounded-lg overflow-hidden text-center">
+                  <div class="bg-gray-100 px-4 py-2">
+                  <p class="text-sm text-gray-600 font-semibold">Tiempo de Cocción</p>
+                  </div>
+                  <div class="p-4">
+                  <p class="text-lg font-semibold">{receta.Tiempo_Coccion} minutos</p>
+                  </div>
+              </div>
+              </div>
+          </div>
+
+          <div class="mt-8 gap-4">
+              <div>
+                  <h2 class="text-xl font-semibold mb-2">Ingredientes</h2>
+                  <ul class="list-disc pl-4">
+                      <!-- Ingredientes-->
+                      {receta.Lista_Ingredientes.split(',').map((ingrediente) => (
+                      <li>{ingrediente.trim()}</li>
+                    ))}
+                  </ul>
+              </div>
+              <div class="mt-8">
+                  <h2 class="text-xl font-semibold mb-2">Instrucciones</h2>
+                  <ol class="list-decimal pl-4">
+                    {receta.INSTRUCCIONES.split('.')
+                    .filter((paso) => paso.trim() !== '')
+                    .map((paso) => (
+                    <li>{paso.trim()}</li>
+                  ))}
+                  </ol>
+                  
+              </div>
+          </div>
+
+          <div class="mt-8">
+              <h2 class="text-xl font-semibold mb-4">Valorar y Comentar</h2>
+              <!-- Formulario de valoración y comentario -->
+              <div class="border rounded-lg p-4">
+                  <h3 class="text-lg font-semibold mb-4">Tu Valoración</h3>
+                  <!-- Valoración ayuddda -->
+                  <div class="flex items-center"> 
+                      <div class="flex">
+                          <input type="radio" id="star5" name="rating" value="5" class="hidden" />
+                          <label for="star5" class="text-xl cursor-pointer hover:text-yellow-500">&#9733;</label>
+                          <input type="radio" id="star4" name="rating" value="4" class="hidden" />
+                          <label for="star4" class="text-xl cursor-pointer hover:text-yellow-500">&#9733;</label>
+                          <input type="radio" id="star3" name="rating" value="3" class="hidden" />
+                          <label for="star3" class="text-xl cursor-pointer hover:text-yellow-500">&#9733;</label>
+                          <input type="radio" id="star2" name="rating" value="2" class="hidden" />
+                          <label for="star2" class="text-xl cursor-pointer hover:text-yellow-500">&#9733;</label>
+                          <input type="radio" id="star1" name="rating" value="1" class="hidden" />
+                          <label for="star1" class="text-xl cursor-pointer hover:text-yellow-500">&#9733;</label>
+                      </div>
+                  </div>
+                  <!-- Campo para el comentario -->
+                  <div class="mb-4">
+                      <label for="comentario" class="block text-sm font-medium text-gray-700">Comentario</label>
+                      <textarea id="comentario" name="comentario" rows="3" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"></textarea>
+                  </div>
+                  <!-- Botón de enviar -->
+                  <div class="flex justify-end">
+                      <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg">Enviar</button>
+                  </div>
+              </div>
+          </div>
+          
+          
+          
+
+          <div class="mt-8">
+              <h2 class="text-xl font-semibold mb-4">Comentarios</h2>
+          
+              <!-- Comentarios -->
+              <div class="border rounded-lg p-4">
+                  <h3 class="text-lg font-semibold mb-4">Comentarios</h3>
+                  <div class="mb-4">
+                      <div class="flex justify-between items-center mb-2">
+                      <span class="font-semibold">Nombre Usuario</span>
+                      <span class="text-gray-500 text-sm">Hace 2 días</span>
+                      </div>
+                      <p class="text-gray-700">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam at libero sit amet lorem aliquet condimentum.</p>
+                  </div>
+                  <div class="mb-4">
+                      <div class="flex justify-between items-center mb-2">
+                      <span class="font-semibold">Otro Usuario</span>
+                      <span class="text-gray-500 text-sm">Hace 5 días</span>
+                      </div>
+                      <p class="text-gray-700">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam at libero sit amet lorem aliquet condimentum.</p>
+                  </div>
+              <!-- comentarios proximos :o -->
+              </div>
+       </div>
+        
+
+          </div>
+      </div>
+  </div>
+  <Footer></Footer>
+</Layout>
