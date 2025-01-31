@@ -1,0 +1,91 @@
+---
+import Header from "../components/Header.astro"
+---
+<Header></Header>
+<main class="container mx-auto px-4 py-6">
+  <h1 class="text-2xl font-semibold mb-6">Mis Favoritos</h1>
+
+  <!-- Contenedor de favoritos -->
+  <div 
+    id="favoritos-container" 
+    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+  >
+    <p class="text-gray-700">Cargando...</p>
+  </div>
+</main>
+
+<script>
+  let favoritos: Array<{
+    ID_RECETA: number;
+    NOMBRE_RECETA: string;
+    IMAGEN_RECETA: string;
+    Descripcion_Receta: string;
+  }> = [];
+
+  // Función para renderizar los favoritos
+  function renderFavoritos() {
+    const favoritosContainer = document.getElementById("favoritos-container");
+    if (!favoritosContainer) return;
+
+    if (favoritos.length > 0) {
+      favoritosContainer.innerHTML = favoritos
+        .map(
+          (favorito) => `
+          <div class="transition duration-300 transform hover:scale-105 border rounded-lg overflow-hidden shadow-md cursor-pointer" data-id="${favorito.ID_RECETA}">
+            <img 
+              src=${"src/" + favorito.IMAGEN_RECETA}
+              alt="${favorito.NOMBRE_RECETA}" 
+              class="w-full h-48 object-cover" 
+            />
+            <div class="p-4">
+              <h2 class="text-lg font-bold">${favorito.NOMBRE_RECETA}</h2>
+              <p class="text-sm text-gray-600">${favorito.Descripcion_Receta}</p>
+            </div>
+          </div>`
+        )
+        .join('');
+
+      // Add click event listeners to the recipe cards
+      favoritosContainer.querySelectorAll('.border').forEach(card => {
+        card.addEventListener('click', (e) => {
+          const target = e.currentTarget as HTMLElement;
+          const id = target.dataset.id;
+          if (id) redirigirAReceta(parseInt(id, 10));
+        });
+      });
+    } else {
+      favoritosContainer.innerHTML = `<p class="text-gray-700">Aún no tienes recetas en tus favoritos.</p>`;
+    }
+  }
+
+  // Función para cargar los favoritos
+  async function cargarFavoritos() {
+    const usuario = localStorage.getItem('usuario');
+    if (!usuario) {
+      window.location.href = '/log-in';
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:3000/api/favoritos/${usuario.slice(1, -1)}`);
+      if (response.ok) {
+        favoritos = await response.json();
+        console.log('Favoritos cargados:', favoritos);
+      } else {
+        console.error('Error al cargar los favoritos.');
+      }
+    } catch (error) {
+      console.error('Error en el fetch:', error);
+    } finally {
+      renderFavoritos();
+    }
+  }
+
+  // Función para redirigir a la página de la receta
+  function redirigirAReceta(idReceta: number) {
+    window.location.href = `/recetas/${idReceta}`;
+  }
+
+  // Cargar favoritos cuando el DOM esté listo
+  document.addEventListener('DOMContentLoaded', cargarFavoritos);
+</script>

@@ -14,22 +14,109 @@ try {
 } catch (error) {
   console.error('Error al obtener recetas:', error);
 }
+
+
 ---
 
 <Layout title="Recetas EH">
+  <script>
+    // Función que se ejecuta cuando la página se carga
+
+    onload = function()  {
+      let categoria = "index_visitas";
+      try {
+           fetch(`http://localhost:3000/api/incrementar-visitas`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ categoria }), // Enviar la categoría al servidor
+          });
+          console.log(`Visita registrada para la categoría: ${categoria}`);
+        } catch (error) {
+          console.error("Error al incrementar las visitas:", error);
+        }
+        
+    }
+  
+  
+    document.getElementById("buscador-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+  
+      const query = (document.getElementById("buscador") as HTMLInputElement).value.trim();
+  
+      if (!query) {
+        alert("Por favor ingresa un término de búsqueda");
+        return;
+      }
+  
+      try {
+        const response = await fetch(`http://localhost:3000/api/buscar?query=${encodeURIComponent(query)}`);
+        const resultados = await response.json();
+  
+        if (response.ok) {
+          mostrarResultados(resultados);
+        } else {
+          console.error("Error al realizar la búsqueda:", resultados.error);
+        }
+      } catch (error) {
+        console.error("Error en la solicitud de búsqueda:", error);
+      }
+    });
+  
+    function mostrarResultados(resultados) {
+      document.getElementById("recetas-populares").style.display = "none";
+      document.getElementById("buscador_container").style.display = "block";
+      const contenedor = document.getElementById("resultados-recetas");
+      contenedor.innerHTML = ""; // Limpia resultados anteriores
+  
+      if (resultados.length === 0) {
+        contenedor.innerHTML = "<p>No se encontraron recetas.</p>";
+        return setTimeout(() => {
+          document.getElementById("recetas-populares").style.display = "grid";
+          document.getElementById("buscador_container").style.display = "none";
+        }, 2000);
+      }
+  
+      resultados.forEach((receta) => {
+        const card = `
+          <div class="relative max-w-mlg bg-white shadow-md rounded-lg overflow-hidden transition duration-300 transform hover:scale-105">
+            <a href="/recetas/${receta.ID_RECETA}" class="block">
+              <img src="/src/${receta.IMAGEN_RECETA}" alt="${receta.NOMBRE_RECETA}" class="h-48 w-full object-cover" />
+            </a>  
+              <div class="p-4">
+                <h3 class="text-xl font-semibold mb-2">${receta.NOMBRE_RECETA}</h3>
+                <p class="text-gray-700 line-clamp-3">${receta.Descripcion_Receta}</p>
+                <div class="flex justify-between mt-2">
+                <a href="/recetas/${receta.ID_RECETA}" class="text-blue-500 hover:underline mt-2 block">Ver más...</a>
+                <p class="text-right">&#9733; ${receta.VALORACION_RECETA == null ? "--" : receta.VALORACION_RECETA}</p>
+                </div>
+              </div>
+          </div>
+        `;
+        contenedor.insertAdjacentHTML("beforeend", card);
+      });
+    }
+  </script>
+  
   <main>
     <Header />
     <div class="container mx-auto px-4 py-8">
       <h2 class="text-2xl font-bold mb-4">Recetas Populares</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div id="recetas-populares" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {recetas.map((receta) => (
+          
           <CardsFood 
             href={`/recetas/${receta.ID_RECETA}`} 
             title={receta.NOMBRE_RECETA} 
             body={receta.Descripcion_Receta} 
             src={`src/${receta.IMAGEN_RECETA}`} 
+            rating={receta.VALORACION_RECETA == null ? "--" : receta.VALORACION_RECETA}
           />
         ))}
+      </div>
+
+      <div id="buscador_container" class="mt-8">
+        <h2 class="text-2xl font-bold mb-4">Resultados de búsqueda</h2>
+        <div id="resultados-recetas" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
       </div>
       <BotonSubirRcetas />
     </div>

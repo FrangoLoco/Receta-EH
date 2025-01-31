@@ -1,0 +1,28 @@
+---
+import VisitasTable from '../components/VisitasTable.astro';
+
+let visitas = [];
+
+try {
+  const response = await fetch('http://localhost:3000/vistas');
+  visitas = await response.json(); // Asignar los datos obtenidos a la variable visitas
+} catch (error) {
+  console.error('Error al obtener visitas:', error);
+}
+---
+
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrador de Visitas</title>
+  </head>
+  <body class="bg-gray-100">
+    <div class="container mx-auto mt-10 p-6 bg-white rounded shadow-lg">
+      <h1 class="text-2xl font-bold mb-4 text-center">Panel de Administrador</h1>
+      
+      <!-- Pasar los datos dinámicos al componente -->
+      <VisitasTable visitas={visitas} />
+    </div>
+  </body>
+</html>

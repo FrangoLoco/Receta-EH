@@ -1,8 +1,84 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import Layout from '../layouts/Layout.astro'; 
 import Header from '../components/Header.astro';
 ---
+<!DOCTYPE html> 
+<Header>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acerca de Nosotros</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            overflow-x: hidden; /* Evita desplazamiento horizontal durante la animación */
+        }
+        .about-section {
+            background-color: #0077b6;
+            color: #fff;
+            text-align: center;
+            padding: 50px 20px;
+        }
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+            transform: translateX(-100%); /* Posición inicial fuera de pantalla */
+            opacity: 0; /* Invisible al inicio */
+            transition: transform 1s ease-out, opacity 1s ease-out; /* Animación suave */
+        }
+        .about-content.active {
+            transform: translateX(0); /* Mueve el contenido a su posición original */
+            opacity: 1; /* Lo hace visible */
+        }
+        .about-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        .about-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+        .about-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .about-image img {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div class="about-section">
+        <div class="about-content" id="aboutContent">
+            <h1 class="about-title">Acerca de Nosotros</h1>
+            <div class="about-image">
+                <img src="https://fantasiapersonajes.es/476813-large_default/south-park-peluche-chef-22-cm.jpg" alt="Nuestro equipo">
+            </div>
+            <p class="about-text">
+                Somos una empresa dedicada a la subida de recetas para facilitar el que las personas puedan acceder a recetas faciles, buenas y deliciosas de hacer.
+            </p>
+        </div>
+    </div>
 
-<Layout title='Acerca'>
-    <Header></Header>   
-</Layout>
+    <script>
+        // Ejecuta la animación al cargar la página
+        window.addEventListener('DOMContentLoaded', () => {
+            const aboutContent = document.getElementById('aboutContent');
+            
+            // Retrasa ligeramente la animación para un mejor efecto visual
+            setTimeout(() => {
+                aboutContent.classList.add('active');
+            }, 500); // Retraso de 500 ms
+        });
+    </script>
+</body>
+</html>

@@ -8,108 +8,215 @@ interface Props {
 }
 
 const { src } = Astro.props;
+
 ---
 <Layout title='sumbit recetas'>
     <Header></Header>  
-    <div class="container mx-auto px-4 py-8" style="max-width: 800px;">
-        <div class="bg-white shadow-md rounded-lg overflow-hidden">
-            <!-- Cabecera contenedor -->
+    <script>
+
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // Incrementar visitas al índice
+fetch('http://localhost:3000/api/incrementar-visitas', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ categoria: 'subida_recetas_visitas' }), // Cambia la categoría según sea necesario
+})
+  .then(response => response.json())
+  .then(data => console.log('Visita incrementada:', data))
+  .catch(error => console.error('Error al incrementar visitas:', error));
+
+
+    const inputFile = document.getElementById('imageInput');
+    const preview = document.getElementById('preview') as HTMLImageElement;
+    const uploadForm = document.getElementById('uploadForm');
+
+    // Previsualizar la imagen seleccionada
+    inputFile?.addEventListener('change', (event) => {
+        const input = event.target as HTMLInputElement;
+
+        if (!input.files || !input.files[0]) {
+            console.error("No se seleccionó un archivo");
+            return;
+        }
+
+        const file = input.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            if (e.target?.result) {
+                preview.src = e.target.result as string;
+            }
+        };
+
+        reader.readAsDataURL(file);
+    });
+
+    document.getElementById('uploadForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData();
+
+    // Obtener el input del archivo y verificar su tipo
+    const fileInput = document.getElementById('imageInput') as HTMLInputElement; 
+    if (fileInput?.files && fileInput.files[0]) {
+        formData.append('image', fileInput.files[0]);
+    } else {
+        alert('Por favor selecciona una imagen.');
+        return;
+    }
+
+    // Agregar los datos del formulario al FormData
+    const nombreReceta = (document.querySelector('input[name="nombreReceta"]') as HTMLInputElement).value;
+    const porciones = (document.querySelector('input[name="porciones"]') as HTMLInputElement).value;
+    const tiempoPreparacion = (document.querySelector('input[name="tiempoPreparacion"]') as HTMLInputElement).value;
+    const tiempoCoccion = (document.querySelector('input[name="tiempoCoccion"]') as HTMLInputElement).value;
+    const ingredientes = Array.from(document.querySelectorAll('.ingrediente')).map(input => (input as HTMLInputElement).value);
+    const instrucciones = (document.getElementById('instrucciones') as HTMLTextAreaElement).value;
+    const descripcion = (document.getElementById('descripcion') as HTMLTextAreaElement).value;
+    const categoria = (document.getElementById('categorias') as HTMLTextAreaElement).value;
+
+    formData.append('nombreReceta', nombreReceta);
+    formData.append('porciones', porciones);
+    formData.append('tiempoPreparacion', tiempoPreparacion);
+    formData.append('tiempoCoccion', tiempoCoccion);
+    formData.append('ingredientes', JSON.stringify(ingredientes));
+    formData.append('instrucciones', instrucciones);
+    formData.append('descripcion', descripcion);
+    formData.append('categoria', categoria);
+
+    // Enviar los datos al servidor
+    try {
+        const response = await fetch('http://localhost:3000/upload', {
+            method: 'POST',
+            body: formData,
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            alert('Datos enviados correctamente');
+            console.log(result);
+        } else {
+            alert(`Error: ${result.error}`);
+        }
+    } catch (error) {
+        console.error('Error al enviar los datos:', error);
+    }
+});
+
+
+    // Agregar ingredientes dinámicamente
+    const botonAgregarIngrediente = document.getElementById('boton-agregar-ingrediente');
+    const listaIngredientes = uploadForm.querySelector('ul.list-disc');
+
+    botonAgregarIngrediente?.addEventListener('click', (event) => {
+        event.preventDefault();
+        const nuevoIngrediente = document.createElement('li');
+        nuevoIngrediente.innerHTML = '<input class="ingrediente resize my-1" type="text" placeholder="Ingrediente">';
+        listaIngredientes?.appendChild(nuevoIngrediente);
+    });
+});
+
+    </script>
+
+<div class="container mx-auto px-4 py-8" style="max-width: 800px;">
+    <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <!-- Cabecera contenedor -->
+        <form id="uploadForm" enctype="multipart/form-data">
             <div class="flex justify-between items-center px-6 py-4 border-b">
-                <input type="text" class="text-3xl font-bold" placeholder="Nombre de la receta">
+                <input type="text" class="text-3xl font-bold" name="nombreReceta" required placeholder="Nombre de la receta">
                 <!-- Botones de favoritos y compartir -->
                 <div class="flex items-center space-x-4">
-                    <!-- Botón de favoritos -->
-                    <button class="text-gray-600">
-                        <svg class="w-6 h-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 6.00019C10.2006 3.90317 7.19377 3.2551 4.93923 5.17534C2.68468 7.09558 2.36727 10.3061 4.13778 12.5772C5.60984 14.4654 10.0648 18.4479 11.5249 19.7369C11.6882 19.8811 11.7699 19.9532 11.8652 19.9815C11.9483 20.0062 12.0393 20.0062 12.1225 19.9815C12.2178 19.9532 12.2994 19.8811 12.4628 19.7369C13.9229 18.4479 18.3778 14.4654 19.8499 12.5772C21.6204 10.3061 21.3417 7.07538 19.0484 5.17534C16.7551 3.2753 13.7994 3.90317 12 6.00019Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </button>
                     <!-- Botones de Compartir -->
                     <div class="flex items-center space-x-2">
-                        <button class="text-gray-600">
-                            <svg class="w-6 h-6 text-gray-600" viewBox="-5 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                                <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                <g id="Dribbble-Light-Preview" transform="translate(-385.000000, -7399.000000)" fill="#000000">
-                                <g id="icons" transform="translate(56.000000, 160.000000)">
-                                <path d="M335.821282,7259 L335.821282,7250 L338.553693,7250 L339,7246 L335.821282,7246 L335.821282,7244.052 C335.821282,7243.022 335.847593,7242 337.286884,7242 L338.744689,7242 L338.744689,7239.14 C338.744689,7239.097 337.492497,7239 336.225687,7239 C333.580004,7239 331.923407,7240.657 331.923407,7243.7 L331.923407,7246 L329,7246 L329,7250 L331.923407,7250 L331.923407,7259 L335.821282,7259 Z" id="facebook-[#176]"></path>
-                            </svg>
-                        </button>
-                        <button class="text-gray-600">
-                            <svg class="w-6 h-6 text-gray-600" viewBox="0 0 21.573 19.5" version="1.1" id="svg4" xmlns="http://www.w3.org/2000/svg">
-                            <defs
-                                id="defs8" />
-                            <path d="m 16.998462,0 h 3.308 l -7.227,8.26 8.502,11.24 h -6.657 l -5.2139994,-6.817 -5.966,6.817 H 0.43446256 L 8.1644626,10.665 0.00846256,0 H 6.8344626 l 4.7129994,6.231 z m -1.161,17.52 h 1.833 L 5.8384626,1.876 h -1.967 z"
-                                id="path2" />
-                            </svg>
-                        </button>
-                        <button class="text-gray-600">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 774 1000.2" class="w-6 h-6 text-gray-600"><path d="M0 359c0-42 8.8-83.7 26.5-125s43-79.7 76-115 76.3-64 130-86S345.7 0 411 0c106 0 193 32.7 261 98s102 142.3 102 231c0 114-28.8 208.2-86.5 282.5S555.3 723 464 723c-30 0-58.2-7-84.5-21s-44.8-31-55.5-51l-40 158c-3.3 12.7-7.7 25.5-13 38.5S259.8 873 253.5 885c-6.3 12-12.7 23.3-19 34s-12.7 20.7-19 30-11.8 17.2-16.5 23.5-9 11.8-13 16.5l-6 8c-2 2.7-4.7 3.7-8 3s-5.3-2.7-6-6c0-.7-.5-5.3-1.5-14s-2-17.8-3-27.5-2-22.2-3-37.5-1.3-30.2-1-44.5 1.3-30.2 3-47.5 4.2-33.3 7.5-48c7.3-31.3 32-135.7 74-313-5.3-10.7-9.7-23.5-13-38.5s-5-27.2-5-36.5l-1-15c0-42.7 10.8-78.2 32.5-106.5S303.3 223 334 223c24.7 0 43.8 8.2 57.5 24.5S412 284.3 412 309c0 15.3-2.8 34.2-8.5 56.5s-13.2 48-22.5 77-16 52.5-20 70.5c-6.7 30-.8 56 17.5 78s42.8 33 73.5 33c52.7 0 96.2-29.8 130.5-89.5S634 402.7 634 318c0-64.7-21-117.5-63-158.5S470.3 98 395 98c-84 0-152.2 27-204.5 81S112 297.7 112 373c0 44.7 12.7 82.3 38 113 8.7 10 11.3 20.7 8 32-1.3 3.3-3.3 11-6 23s-4.7 19.7-6 23c-1.3 7.3-4.7 12.2-10 14.5s-11.3 2.2-18-.5c-39.3-16-68.8-43.5-88.5-82.5S0 411 0 359z"/></svg>
-                        </button>
+                        <label for="categorias">Categorias</label>
+                        <select name="categorias" id="categorias">     
+                            <option value="1">Postre</option>
+                            <option value="2">Platos Principales</option>
+                            <option value="3">Entradas</option>
+                            <option value="4">Desayunos</option>
+                            <option value="5">Bebidas</option>
+                        </select>
                     </div>
                 </div>
             </div>
-        <!-- contenedor imagenes prox -->
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGVq9sHo9pPp4uySO0bdnmXbMDcxlUJ-1_TNRGPbwudg&s" alt="" class="mt-4 mb-4 m-auto rounded-lg shadow-lg h-[442px] w-[600px]">
-
-        <!-- Informacion adicional -->
-        <div class="container mx-auto px-4 py-8" style="max-width: 650px;">
-            <div class="mt-8">
-                <h2 class="text-xl font-semibold mb-2">Información Adicional</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="border rounded-lg overflow-hidden text-center">
-                    <div class="bg-gray-100 px-4 py-2">
-                    <p class="text-sm text-gray-600 font-semibold">Porciones</p>
-                    </div>
-                    <div class="p-4">
-                    <input type="number" class="text-lg font-semibold text-center w-12" placeholder="4" required>
-                    </div>
-                </div>
-                <div class="border rounded-lg overflow-hidden text-center">
-                    <div class="bg-gray-100 px-4 py-2">
-                    <p class="text-sm text-gray-600 font-semibold">Tiempo de Preparación</p>
-                    </div>
-                    <div class="p-4">
-                    <p class="text-lg font-semibold"><input class="w-12" type="number" placeholder="20" required> minutos</p>
-                    </div>
-                </div>
-                <div class="border rounded-lg overflow-hidden text-center">
-                    <div class="bg-gray-100 px-4 py-2">
-                    <p class="text-sm text-gray-600 font-semibold">Tiempo de Cocción</p>
-                    </div>
-                    <div class="p-4">
-                    <p class="text-lg font-semibold"><input class="w-12" type="number" placeholder="30" required> minutos</p>
-                    </div>
-                </div>
-                </div>
-            </div>
-
-            <!-- Ingredientes-->
-            <div class="mt-8 gap-4">
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">Ingredientes</h2>
-                    <ul class="list-disc pl-4">
-                        <li><input class="resize" type="text" placeholder="Ingrediente 1"></li>
-                        <li><input class="resize" type="text" placeholder="Ingrediente 2"></li>
-                        <li><input class="resize" type="text" placeholder="Ingrediente 3"></li>
-                    </ul>
-                    <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-2 rounded-lg">Agregar Ingrediente</button>
-                </div>
-                <!-- Instrucciones -->
-                <div class="mt-8">
-                    <h2 class="text-xl font-semibold mb-2">Instrucciones</h2>
-                    <ol class="list-decimal pl-4">
-                        <li><input class="resize" type="text" placeholder="Paso 1:Instrucción del paso 1"></li>
-                        <li><input class="resize" type="text" placeholder="Paso 2:Instrucción del paso 2"></li>
-                        <li><input class="resize" type="text" placeholder="Paso 3:Instrucción del paso 3"></li>
-                    </ol>
-                    <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-2 rounded-lg">Agregar Instrucción</button>
-                </div>
-            </div>
-            <div class="py-4 flex justify-center">
-            <button type="submit" class="w-[200px]  bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg items-center">Subir</button>
-            </div>    
+        
+        <div class="mt-8 px-6">
+            <h2 class="text-xl font-semibold mb-4">Sube una imagen</h2>
+            <input type="file" accept="image/*" id="imageInput" class="hidden" required>
+            <label for="imageInput" class="cursor-pointer bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg inline-flex items-center">
+                Seleccionar Imagen
+            </label>
+            <div id="imagePreview" class="mt-4 flex justify-center">
+                <img
+                    id="preview"
+                    src="https://via.placeholder.com/600x442.png?text=Vista+Previa+de+la+Imagen"
+                    alt="Vista previa"
+                    class="rounded-lg shadow-lg h-[442px] w-[600px]"/>
             </div>
         </div>
-    </div>
+
+        <!-- Descripción -->
+        <div class="container mx-auto px-4 py-8" style="max-width: 650px;">
+            <h2 class="text-xl font-semibold mb-2">Descripción</h2>
+            <textarea required id="descripcion" name="descripcion" rows="3" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"></textarea>
+        </div>
+
+
+                    
+                    <!-- Informacion adicional -->
+                    <div class="container mx-auto px-4 py-8" style="max-width: 650px;">
+                        <div class="mt-8">
+                            <h2 class="text-xl font-semibold mb-2">Información Adicional</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="border rounded-lg overflow-hidden text-center">
+                                <div class="bg-gray-100 px-4 py-2">
+                                <p class="text-sm text-gray-600 font-semibold">Porciones</p>
+                                </div>
+                                <div class="p-4">
+                                <input type="number" class="text-lg font-semibold text-center w-12" name="porciones" placeholder="4" required>
+                                </div>
+                            </div>
+                            <div class="border rounded-lg overflow-hidden text-center">
+                                <div class="bg-gray-100 px-4 py-2">
+                                <p class="text-sm text-gray-600 font-semibold">Tiempo de Preparación</p>
+                                </div>
+                                <div class="p-4">
+                                <p class="text-lg font-semibold"><input class="w-12" type="number" name="tiempoPreparacion" placeholder="20" required> minutos</p>
+                                </div>
+                            </div>
+                            <div class="border rounded-lg overflow-hidden text-center">
+                                <div class="bg-gray-100 px-4 py-2">
+                                <p class="text-sm text-gray-600 font-semibold">Tiempo de Cocción</p>
+                                </div>
+                                <div class="p-4">
+                                <p class="text-lg font-semibold"><input class="w-12" type="number" name="tiempoCoccion" placeholder="30" required> minutos</p>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+
+                        <!-- Ingredientes-->
+                        <div class="mt-8 gap-4">
+                            <div>
+                                <h2 class="text-xl font-semibold mb-2">Ingredientes</h2>
+                                <ul class="list-disc pl-4">
+                                    <li><input class="ingrediente resize my-1" type="text" placeholder="Ingrediente 1"></li>
+                                </ul>
+                                <button id="boton-agregar-ingrediente" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-2 rounded-lg">Agregar Ingrediente</button>
+                            </div>
+                            <!-- Instrucciones -->
+                            <div class="mt-8">
+                                <h2 class="text-xl font-semibold mb-2">Instrucciones</h2>
+                                <textarea required id="instrucciones" name="instrucciones" rows="3" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"></textarea>
+                            </div>
+                        </div>
+                        <div class="py-4 flex justify-center">
+                            <button type="submit" class="w-[200px]  bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg items-center">Subir</button>
+                        </div>    
+                    </div>
+            </form>
+        </div>
+    </div>    
     <Footer></Footer>
 </Layout>
