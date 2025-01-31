@@ -4,6 +4,7 @@ import Layout from '../layouts/Layout.astro';
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('log-in-form') as HTMLFormElement;
+    console.log(form);
 
     //obtener en localstorage el nombre del usuario desde el backend
     const userName = localStorage.getItem('userName');
@@ -17,6 +18,8 @@ import Layout from '../layouts/Layout.astro';
         email: formData.get('email'),
         password: formData.get('password'),
       };
+
+      console.log(data);
 
       try {
         const response = await fetch('http://localhost:3000/api/usuarios/login', {

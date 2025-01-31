@@ -4,26 +4,32 @@ interface Props {
   body: string;
   href: string;
   src: string;
+  rating: string;
 }
 
-const { href, title, body, src } = Astro.props;
+const { href, title, body, src ,rating} = Astro.props;
 ---
 
 <div class="relative max-w-mlg bg-white shadow-md rounded-lg overflow-hidden transition duration-300 transform hover:scale-105">
   <a href={href} class="block">
     <img src={src} alt={title} class="h-48 w-full object-cover" />
-    <div class="p-4">
-      <h3 class="text-xl font-semibold mb-2">{title}</h3>
+  </a>
 
-      <!-- Cuerpo de la tarjeta con límite de líneas -->
-      <p class="text-gray-700 line-clamp-3">
-        {body}
-      </p>
+  <div class="p-4">
+    <h3 class="text-xl font-semibold mb-2">{title}</h3>
 
-      <!-- Enlace "Ver más" si el contenido se recorta -->
-      <a href={href} class="text-blue-500 hover:underline mt-2 block">
+    <!-- Cuerpo de la tarjeta con límite de líneas -->
+    <p class="text-gray-700 line-clamp-3">
+      {body}
+    </p>
+
+    <!-- Enlace "Ver más" y calificación -->
+    <div class="flex justify-between mt-2">
+      <a href={href} class="text-blue-500 hover:underline block">
         Ver más...
       </a>
+
+      <p class="text-right">&#9733; {rating}</p>
     </div>
-  </a>
+  </div>
 </div>

@@ -1,0 +1,20 @@
+---
+const { visitas } = Astro.props;
+---
+
+<table class="table-auto w-full border-collapse border border-gray-200">
+  <thead>
+    <tr>
+      <th class="border border-gray-300 px-4 py-2">Categoría</th>
+      <th class="border border-gray-300 px-4 py-2">Visitas</th>
+    </tr>
+  </thead>
+  <tbody>
+    {visitas.map((visita) => (
+      <tr>
+        <td class="border border-gray-300 px-4 py-2">{visita.categoria}</td>
+        <td class="border border-gray-300 px-4 py-2">{visita.vistas}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
