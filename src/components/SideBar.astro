@@ -1,4 +1,5 @@
 <script>
+
     document.getElementById("boton-cerrar").addEventListener("click", ocultar);
   
     // Función para ocultar la barra lateral
@@ -15,9 +16,12 @@
       "btn-entradas": "entradas_visitas",
     };
   
+
+    
     // Event listener para los botones del sidebar
     Object.keys(filtros).forEach((btnId) => {
       document.getElementById(btnId).addEventListener("click", async (event) => {
+
         event.preventDefault(); // Prevenir el comportamiento por defecto del botón
         const categoria = filtros[btnId]; // Obtener la categoría correspondiente
         console.log(categoria.split("_"));

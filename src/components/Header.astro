@@ -56,7 +56,12 @@ import SideBar from "../components/SideBar.astro";
     </div>
 </header>
 <script>
-    //obtener el usuario que esta en el localstorage    
+
+if(window.location.pathname != '/'){
+    document.getElementById("buscador-form").style.display = "none"
+    document.getElementById("boton-menu-header").style.display = "none"
+}
+//obtener el usuario que esta en el localstorage    
 const userName = localStorage.getItem('usuario')
 if(userName != null){
     document.getElementById("usuario").innerHTML = userName.slice(1,-1) 

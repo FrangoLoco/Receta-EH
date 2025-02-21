@@ -391,27 +391,39 @@ app.post('/api/incrementar-visitas', async (req, res) => {
 app.get('/vistas', async (req, res) => {
   try {
     const [result] = await pool.query(`
-      SELECT 
-        postres_visitas AS postres,
-        entradas_visitas AS entradas,
-        desayunos_visitas AS desayunos,
-        platos_principales_visitas AS platos_principales,
-        bebidas_visitas AS bebidas,
-        subida_recetas_visitas AS subida_recetas,
-        index_visitas
-      FROM VISTAS
-    `);
+       SELECT 
+        v.postres_visitas AS postres,
+        v.entradas_visitas AS entradas,
+        v.desayunos_visitas AS desayunos,
+        v.platos_principales_visitas AS platos_principales,
+        v.bebidas_visitas AS bebidas,
+        v.subida_recetas_visitas AS subida_recetas,
+        v.index_visitas,
+        (SELECT MAX(id) FROM users) AS max_user_id,
+        (SELECT COUNT(*) FROM RECETAS WHERE ID_CATEGORIA = 1) AS NumPostres,
+        (SELECT COUNT(*) FROM RECETAS WHERE ID_CATEGORIA = 2) AS NumPlatosPrincipales,
+        (SELECT COUNT(*) FROM RECETAS WHERE ID_CATEGORIA = 3) AS NumENtradas,
+        (SELECT COUNT(*) FROM RECETAS WHERE ID_CATEGORIA = 4) AS NumDesayunos,
+        (SELECT COUNT(*) FROM RECETAS WHERE ID_CATEGORIA = 5) AS NumBebidas        
+      FROM VISTAS v;
+      `);
 
     if (result.length > 0) {
       // Convierte las filas a un arreglo más manejable para el frontend
       const visitas = [
-        { categoria: 'index', vistas: result[0].index_visitas },
-        { categoria: 'postres', vistas: result[0].postres },
-        { categoria: 'entradas', vistas: result[0].entradas },
-        { categoria: 'desayunos', vistas: result[0].desayunos },
-        { categoria: 'platos principales', vistas: result[0].platos_principales },
-        { categoria: 'bebidas', vistas: result[0].bebidas },
-        { categoria: 'subida recetas visitas', vistas: result[0].subida_recetas },
+        { categoria: 'Index', vistas: result[0].index_visitas },
+        { categoria: 'Postres', vistas: result[0].postres },
+        { categoria: 'Entradas', vistas: result[0].entradas },
+        { categoria: 'Desayunos', vistas: result[0].desayunos },
+        { categoria: 'Platos principales', vistas: result[0].platos_principales },
+        { categoria: 'Bebidas', vistas: result[0].bebidas },
+        { categoria: 'Subida recetas visitas', vistas: result[0].subida_recetas },
+        { categoria: 'Usuarios registrados', vistas: result[0].max_user_id },
+        { categoria: 'Numero de Postres', vistas: result[0].NumPostres },
+        { categoria: 'Numero de Platos Principales', vistas: result[0].NumPlatosPrincipales },
+        { categoria: 'Numero de Entradas', vistas: result[0].NumENtradas },
+        { categoria: 'Numero de Desayunos', vistas: result[0].NumDesayunos },
+        { categoria: 'Numero de Bebidas', vistas: result[0].NumBebidas },
       ];
       res.json(visitas);
     } else {
@@ -428,8 +440,6 @@ app.get('/vistas', async (req, res) => {
     });
   }
 });
-
-
 
 //Servir carpeta de imágenes subidas
 app.use('/imagenes', express.static('../src/imagenes'));
